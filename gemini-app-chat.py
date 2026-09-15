@@ -13,4 +13,4 @@ chat = client.chats.create(model="gemini-3.5-flash-lite")
 response = chat.send_message(prompt_message)
 
 print(f"User Prompt: {prompt_message}")
-print(f"AI Response: {response.text}")
+print(f"AI Response({client.models.get(model='gemini-3.5-flash-lite').name}): {response.text}")

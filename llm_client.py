@@ -51,5 +51,28 @@ def get_llm_response(message, provider=None):
         #     contents=prompt
         # )
         # return response.text
+    elif provider in ["local", "lmstudio", "ollama"]:
+        local_client = OpenAI(
+            base_url=f"http://localhost:1234/v1/",
+            api_key="lm-studio",
+        )
+        # model_name = os.getenv("LM_STUDIO_MODEL", "deepseek-r1_8b") # ok ok, taking too much time to respond
+        # model_name = os.getenv("LM_STUDIO_MODEL", "llama-3.2-3b") # bad response from model
+        model_name = os.getenv("LM_STUDIO_MODEL", "gemma-4-e4b-it-qat") # good and fast response
+
+
+        messages = []
+
+        for m in message:
+            role = m["role"]
+            content = m["content"]
+            messages.append({ "role": role, "content": content })
+
+        response = local_client.chat.completions.create(
+            model=model_name,
+            messages=messages
+        )
+
+        return response.choices[0].message.content
     else:
         raise ValueError(f"Unsupported provider: {provider}")
